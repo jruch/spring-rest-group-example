@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.springframework</groupId>
-    <artifactId>spring-rest-group-example</artifactId>
+    <artifactId>spring-rest-group-oauth-example</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <parent>
@@ -14,11 +14,30 @@
         <version>1.2.1.RELEASE</version>
     </parent>
 
+    <properties>
+        <start-class>Application</start-class>
+        <spring-security-oauth2.version>2.0.6.RELEASE</spring-security-oauth2.version>
+        <java.version>1.7</java.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+
+        <!--added-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security.oauth</groupId>
+            <artifactId>spring-security-oauth2</artifactId>
+            <version>${spring-security-oauth2.version}</version>
+        </dependency>
+
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>

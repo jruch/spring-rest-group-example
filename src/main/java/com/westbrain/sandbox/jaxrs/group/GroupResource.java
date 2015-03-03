@@ -1,7 +1,9 @@
 package com.westbrain.sandbox.jaxrs.group;
 
+import com.westbrain.sandbox.jaxrs.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.web.bind.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +21,7 @@ import java.io.IOException;
  *
  * @author Eric Westfall (ewestfal@gmail.com)
  */
-@Controller
+@RestController
 @RequestMapping("/groups")
 public class GroupResource {
 
@@ -32,7 +34,7 @@ public class GroupResource {
     }
 
     @RequestMapping(value="/{id}", method = RequestMethod.GET)
-    public  @ResponseBody Group getGroupById(@PathVariable("id") Long id) {
+    public  @ResponseBody Group getGroupById(@PathVariable("id") Long id, @AuthenticationPrincipal User user) {
         Group group = repository.findOne(id);
         if (group == null) {
             throw new DoesNotExistException();
@@ -172,10 +174,10 @@ public class GroupResource {
     public void handleNotFound(DoesNotExistException ex) {
     }
 
-    @ExceptionHandler
-    @ResponseStatus((HttpStatus.BAD_REQUEST))
-    public void handleBadRequest(BadRequestException ex) {
-    }
+//    @ExceptionHandler
+//    @ResponseStatus((HttpStatus.BAD_REQUEST))
+//    public void handleBadRequest(BadRequestException ex) {
+//    }
 
 
 }

@@ -19,95 +19,61 @@ We will use the command line tool ```curl``` to exercise the API. If you also wa
 * http://curl.haxx.se/
 * http://stedolan.github.io/jq/
 
-# Get group 1
+# Test the end point (no authentication)
 
 ```
-curl -D hdr.txt http://localhost:8080/api/v1/groups/1
+curl -D hdr.txt http://localhost:8080/groups/1
 cat hdr.txt
 ```
 
-# Pretty print group 1
+# You receive the following JSON response, which indicates you are not authorized to access the resource:
 
-```
-curl -D hdr.txt -s http://localhost:8080/api/v1/groups/1 | jq "."
-```
-
-# Get a group that doesn't exist
-
-```
-curl -D hdr.txt http://localhost:8080/api/v1/groups/500
-cat hdr.txt
+```json
+{
+  "error": "unauthorized",
+  "error_description":"Full authentication is required to access this resource"
+}
 ```
 
-# Get all groups
+# In order to access the protected resource, you must first request an access token via the OAuth handshake. Request OAuth authorization:
 
-```
-curl -D hdr.txt -s http://localhost:8080/api/v1/groups | jq "."
-```
-
-# Create a new group
-
-```
-curl -D hdr.txt -s -H "Content-Type: application/json" -d '{ "name":"KualiRiceTeam", "description":"The gang of awesome Rice developers!" }' http://localhost:8080/api/v1/groups | jq "."
-cat hdr.txt
+```sh
+curl -X POST -vu clientapp:123456 http://localhost:8080/oauth/token -H "Accept: application/json" -d "password=password1&username=username1&grant_type=password&scope=read%20write&client_secret=123456&client_id=clientapp"
 ```
 
-# Update a group
+## A successful authorization results in the following JSON response (tokens will differ):
 
-```
-curl -D hdr.txt -s http://localhost:8080/api/v1/groups/11 | jq "."
-curl -D hdr.txt -X PUT -H "Content-Type: application/json" -d '{ "id":11, "name":"Eleven!", "description":"This is the new group eleven" }' http://localhost:8080/api/v1/groups/11
-cat hdr.txt
-curl -D hdr.txt -s http://localhost:8080/api/v1/groups/11 | jq "."
-```
-
-# Delete a group
-
-```
-curl -D hdr.txt -s -X DELETE http://localhost:8080/api/v1/groups/11
-cat hdr.txt
-curl -D hdr.txt http://localhost:8080/api/v1/groups/11
-cat hdr.txt
+```json
+{
+  "access_token": "ff16372e-38a7-4e29-88c2-1fb92897f558",
+  "token_type": "bearer",
+  "refresh_token": "f554d386-0b0a-461b-bdb2-292831cecd57",
+  "expires_in": 43199,
+  "scope": "read write"
+}
 ```
 
-# Check the members on group 1
+## Use the `access_token` returned in the previous request to make the authorized request to the protected endpoint:
 
-```
-curl -D hdr.txt -s http://localhost:8080/api/v1/groups/1/members | jq "."
-```
-
-# Look at a specific member
-
-```
-curl -D hdr.txt -s http://localhost:8080/api/v1/groups/1/members/1 | jq "."
+```sh
+curl -D hdr.txt http://localhost:8080/groups/1 -H "Authorization: Bearer 649e4a31-21a8-41a8-b655-c1d90935240c"
 ```
 
-# Add a member to group 1
+If the request is successful, you will see the following JSON response (or something similar):
+
+```json
+{
+    "id":1,
+    "name":"aliquet",
+    "description":"ac pharetra consequat purus sollicitudin urna ipsum"
+}
 
 ```
-curl -D hdr.txt -s -H "Content-Type: application/json" -d '{ "name":"Eric" }' http://localhost:8080/api/v1/groups/1/members | jq "."
-cat hdr.txt
-curl -D hdr.txt -s http://localhost:8080/api/v1/groups/1/members | jq "."
-```
 
-# Update a member on group 1
+After the specified time period, the `access_token` will expire. Use the `refresh_token` that was returned in the original OAuth authorization to retrieve a new `access_token`:
 
-```
-curl -D hdr.txt -s http://localhost:8080/api/v1/groups/1/members | jq "."
-curl -D hdr.txt -X PUT -H "Content-Type: application/json" -d '{ "id":1, "name":"NewPerson" }' http://localhost:8080/api/v1/groups/1/members/1
-cat hdr.txt
-curl -D hdr.txt -s http://localhost:8080/api/v1/groups/1/members/1 | jq "."
-```
-
-# Delete a member on group 1
-
-```
-curl -D hdr.txt -s http://localhost:8080/api/v1/groups/1/members | jq "."
-curl -D hdr.txt -s -X DELETE http://localhost:8080/api/v1/groups/1/members/1
-cat hdr.txt
-curl -D hdr.txt -s http://localhost:8080/api/v1/groups/1/members | jq "."
-curl -D hdr.txt -s http://localhost:8080/api/v1/groups/1/members/1 | jq "."
-cat hdr.txt
+```sh
+curl -X POST -vu clientapp:123456 http://localhost:8080/oauth/token -H "Accept: application/json" -d "grant_type=refresh_token&refresh_token=f554d386-0b0a-461b-bdb2-292831cecd57&client_secret=123456&client_id=clientapp"
 ```
 
 
