@@ -19,14 +19,14 @@ We will use the command line tool ```curl``` to exercise the API. If you also wa
 * http://curl.haxx.se/
 * http://stedolan.github.io/jq/
 
-# Test the end point (no authentication)
+#### Test the end point (no authentication)
 
 ```
 curl -D hdr.txt http://localhost:8080/groups/1
 cat hdr.txt
 ```
 
-# You receive the following JSON response, which indicates you are not authorized to access the resource:
+#### You receive the following JSON response, which indicates you are not authorized to access the resource:
 
 ```json
 {
@@ -35,13 +35,13 @@ cat hdr.txt
 }
 ```
 
-# In order to access the protected resource, you must first request an access token via the OAuth handshake. Request OAuth authorization:
+#### In order to access the protected resource, you must first request an access token via the OAuth handshake. Request OAuth authorization:
 
 ```sh
 curl -X POST -vu clientapp:123456 http://localhost:8080/oauth/token -H "Accept: application/json" -d "password=password1&username=username1&grant_type=password&scope=read%20write&client_secret=123456&client_id=clientapp"
 ```
 
-## A successful authorization results in the following JSON response (tokens will differ):
+#### A successful authorization results in the following JSON response (tokens will differ):
 
 ```json
 {
@@ -53,7 +53,7 @@ curl -X POST -vu clientapp:123456 http://localhost:8080/oauth/token -H "Accept: 
 }
 ```
 
-## Use the `access_token` returned in the previous request to make the authorized request to the protected endpoint:
+#### Use the `access_token` returned in the previous request to make the authorized request to the protected endpoint:
 
 ```sh
 curl -D hdr.txt http://localhost:8080/groups/1 -H "Authorization: Bearer 649e4a31-21a8-41a8-b655-c1d90935240c"
