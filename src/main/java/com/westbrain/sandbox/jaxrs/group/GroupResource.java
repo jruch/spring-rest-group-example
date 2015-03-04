@@ -34,7 +34,7 @@ public class GroupResource {
     }
 
     @RequestMapping(value="/{id}", method = RequestMethod.GET)
-    public  @ResponseBody Group getGroupById(@PathVariable("id") Long id, @AuthenticationPrincipal User user) {
+    public  @ResponseBody Group getGroupById(@PathVariable("id") Long id) {
         Group group = repository.findOne(id);
         if (group == null) {
             throw new DoesNotExistException();

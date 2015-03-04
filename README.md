@@ -1,4 +1,4 @@
-A simple example of using Apache CXF and JAX-RS for REST-ful web services. Just a place to hack around, used for some training and discussion on the Kuali Rice team.
+A simple example of using Apache CXF and JAX-RS for REST-ful web services with Oauth2. Just a place to hack around, used for some training and discussion on the Kuali Rice team.
 
 # Running the Project
 
